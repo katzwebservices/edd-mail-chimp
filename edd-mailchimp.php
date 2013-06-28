@@ -3,7 +3,7 @@
 Plugin Name: Easy Digital Downloads - Mail Chimp
 Plugin URL: http://easydigitaldownloads.com/extension/mail-chimp
 Description: Include a Mail Chimp signup option with your Easy Digital Downloads checkout
-Version: 1.0.5
+Version: 1.0.6
 Author: Pippin Williamson
 Author URI: http://pippinsplugins.com
 Contributors: Pippin Williamson
@@ -33,7 +33,7 @@ function eddmc_updater() {
 
 	// setup the updater
 	$edd_cr_updater = new EDD_SL_Plugin_Updater( EDD_MAILCHIMP_STORE_API_URL, __FILE__, array(
-			'version' 	=> '1.0.5', 		// current version number
+			'version' 	=> '1.0.6', 		// current version number
 			'license' 	=> $eddmc_license_key, // license key (used get_option above to retrieve from DB)
 			'item_name' => EDD_MAILCHIMP_PRODUCT_NAME, // name of this plugin
 			'author' 	=> 'Pippin Williamson'  // author of this plugin

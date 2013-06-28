@@ -204,11 +204,10 @@ function eddmc_mailchimp_fields() {
 add_action('edd_purchase_form_before_submit', 'eddmc_mailchimp_fields', 100);
 
 // checks whether a user should be signed up for he mailchimp list
-function eddmc_check_for_email_signup($posted, $user_info) {
+function eddmc_check_for_email_signup( $posted, $user_info, $valid_data ) {
 	if( isset($posted['eddmc_mailchimp_signup']) ) {
 
-		$email = $user_info['email'];
-		eddmc_subscribe_email($email);
+		eddmc_subscribe_email( $user_info );
 	}
 }
-add_action('edd_checkout_before_gateway', 'eddmc_check_for_email_signup', 10, 2);
+add_action('edd_checkout_before_gateway', 'eddmc_check_for_email_signup', 10, 3 );

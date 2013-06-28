@@ -172,15 +172,15 @@ function eddmc_get_mailchimp_lists() {
 }
 
 // adds an email to the mailchimp subscription list
-function eddmc_subscribe_email($email) {
+function eddmc_subscribe_email( $user_info ) {
 	global $edd_options;
 
-	if( isset( $edd_options['eddmc_api'] ) && strlen( trim( $edd_options['eddmc_api'] ) ) > 0 ) {
+	if( ! empty( $edd_options['eddmc_api'] ) ) {
 		if( !class_exists( 'MCAPI' ) )
 			require_once('mailchimp/MCAPI.class.php');
-		$api = new MCAPI($edd_options['eddmc_api']);
+		$api = new MCAPI( trim( $edd_options['eddmc_api'] ) );
 		$opt_in = isset($edd_options['eddmc_double_opt_in']) ? true : false;
-		if($api->listSubscribe($edd_options['eddmc_list'], $email, '', 'html', $opt_in) === true) {
+		if( $api->listSubscribe( $edd_options['eddmc_list'], $user_info['email'], array( 'FNAME' => $user_info['first_name'], 'LNAME' => $user_info['last_name'] ), 'html', $opt_in ) === true) {
 			return true;
 		}
 	}
@@ -192,10 +192,10 @@ function eddmc_subscribe_email($email) {
 function eddmc_mailchimp_fields() {
 	global $edd_options;
 	ob_start();
-		if( isset( $edd_options['eddmc_api'] ) && strlen( trim( $edd_options['eddmc_api'] ) ) > 0 ) { ?>
+		if( ! empty( $edd_options['eddmc_api'] ) ) { ?>
 		<p>
 			<input name="eddmc_mailchimp_signup" id="eddmc_mailchimp_signup" type="checkbox" checked="checked"/>
-			<label for="eddmc_mailchimp_signup"><?php echo isset($edd_options['eddmc_label']) ? $edd_options['eddmc_label'] : __('Sign up for our mailing list', 'eddmc'); ?></label>
+			<label for="eddmc_mailchimp_signup"><?php echo ! empty( $edd_options['eddmc_label']) ? $edd_options['eddmc_label'] : __('Sign up for our mailing list', 'eddmc'); ?></label>
 		</p>
 		<?php
 	}

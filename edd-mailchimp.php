@@ -3,7 +3,7 @@
 Plugin Name: Easy Digital Downloads - Mail Chimp
 Plugin URL: http://easydigitaldownloads.com/extension/mail-chimp
 Description: Include a Mail Chimp signup option with your Easy Digital Downloads checkout
-Version: 1.0.7
+Version: 1.0.8
 Author: Pippin Williamson
 Author URI: http://pippinsplugins.com
 Contributors: Pippin Williamson
@@ -22,7 +22,7 @@ define( 'EDD_MAILCHIMP_PRODUCT_NAME', 'Mail Chimp' );
 if( ! class_exists( 'EDD_License' ) ) {
 	include( dirname( __FILE__ ) . '/EDD_License_Handler.php' );
 }
-$eddmc_license = new EDD_License( __FILE__, EDD_MAILCHIMP_PRODUCT_NAME, '1.0.7', 'Pippin Williamson' );
+$eddmc_license = new EDD_License( __FILE__, EDD_MAILCHIMP_PRODUCT_NAME, '1.0.8', 'Pippin Williamson' );
 
 /*
 |--------------------------------------------------------------------------
@@ -96,16 +96,21 @@ function eddmc_get_mailchimp_lists() {
 
 	if( isset( $edd_options['eddmc_api'] ) && strlen( trim( $edd_options['eddmc_api'] ) ) > 0 ) {
 
-		$lists = array();
 		if( !class_exists( 'MCAPI' ) )
 			require_once('mailchimp/MCAPI.class.php');
-		$api = new MCAPI($edd_options['eddmc_api']);
-		$list_data = $api->lists();
-		if($list_data) :
-			foreach($list_data['data'] as $key => $list) :
-				$lists[$list['id']] = $list['name'];
-			endforeach;
-		endif;
+
+		$lists = (array) get_transient( 'edd_mailchimp_lists' );
+		if( false === $lists ) {
+
+			$api = new MCAPI($edd_options['eddmc_api']);
+			$list_data = $api->lists();
+			if($list_data) :
+				foreach($list_data['data'] as $key => $list) :
+					$lists[$list['id']] = $list['name'];
+				endforeach;
+			endif;
+			set_transient( 'edd_mailchimp_lists', $lists, 24*24*24 );
+		}
 		return $lists;
 	}
 	return array();

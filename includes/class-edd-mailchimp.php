@@ -1,14 +1,17 @@
 <?php
 /**
- * Base newsletter class
+ * EDD Mail Chimp class, extension of the EDD base newsletter classs
  *
  * @copyright   Copyright (c) 2012, Pippin Williamson
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
+ * @since       2.0
 */
 
 class EDD_MailChimp extends EDD_Newsletter {
 
-
+	/**
+	 * Sets up the checkout label
+	 */
 	public function init() {
 		global $edd_options;
 		if( ! empty( $edd_options['eddmc_label'] ) ) {
@@ -19,6 +22,9 @@ class EDD_MailChimp extends EDD_Newsletter {
 
 	}
 
+	/**
+	 * Retrieves the lists from Mail Chimp
+	 */
 	public function get_lists() {
 
 		global $edd_options;
@@ -47,6 +53,9 @@ class EDD_MailChimp extends EDD_Newsletter {
 		return (array) $this->lists;
 	}
 
+	/**
+	 * Registers the plugin settings
+	 */
 	public function settings( $settings ) {
 
 		$eddmc_settings = array(
@@ -94,12 +103,18 @@ class EDD_MailChimp extends EDD_Newsletter {
 		return array_merge( $settings, $eddmc_settings );
 	}
 
+	/**
+	 * Determines if the checkout signup option should be displayed
+	 */
 	public function show_checkout_signup() {
 		global $edd_options;
 
 		return ! empty( $edd_options['eddmc_show_checkout_signup'] );
 	}
 
+	/**
+	 * Subscribe an email to a list
+	 */
 	public function subscribe_email( $user_info = array(), $list_id = false ) {
 
 		global $edd_options;

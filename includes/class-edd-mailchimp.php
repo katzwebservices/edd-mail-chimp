@@ -61,7 +61,7 @@ class EDD_MailChimp extends EDD_Newsletter {
 		$eddmc_settings = array(
 			array(
 				'id'      => 'eddmc_settings',
-				'name'    => '<strong>' . __('Mail Chimp Settings', 'eddmc' ) . '</strong>',
+				'name'    => '<strong>' . __( 'Mail Chimp Settings', 'eddmc' ) . '</strong>',
 				'desc'    => __( 'Configure Mail Chimp Integration Settings', 'eddmc' ),
 				'type'    => 'header'
 			),

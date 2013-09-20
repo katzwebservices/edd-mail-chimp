@@ -20,6 +20,8 @@ class EDD_MailChimp extends EDD_Newsletter {
 			$this->checkout_label = 'Signup for the newsletter';
 		}
 
+		add_filter( 'edd_settings_extensions_sanitize', array( $this, 'save_settings' ) );
+
 	}
 
 	/**
@@ -101,6 +103,15 @@ class EDD_MailChimp extends EDD_Newsletter {
 		);
 
 		return array_merge( $settings, $eddmc_settings );
+	}
+
+	/**
+	 * Flush the list transient on save
+	 */
+	public function save_settings( $input ) {
+		if( isset( $input['eddmc_api'] ) ) {
+			delete_transient( 'edd_mailchimp_lists' );
+		}
 	}
 
 	/**

@@ -112,6 +112,7 @@ class EDD_MailChimp extends EDD_Newsletter {
 		if( isset( $input['eddmc_api'] ) ) {
 			delete_transient( 'edd_mailchimp_lists' );
 		}
+		return $input;
 	}
 
 	/**

@@ -109,7 +109,8 @@ class EDD_Newsletter {
 		add_filter( 'edd_metabox_fields_save', array( $this, 'save_metabox' ) );
 		add_filter( 'edd_settings_extensions', array( $this, 'settings' ) );
 		add_action( 'edd_purchase_form_before_submit', array( $this, 'checkout_fields' ), 100 );
-		add_action( 'edd_checkout_before_gateway', array( $this, 'check_for_email_signup' ), 10, 3 );
+		add_action( 'edd_checkout_before_gateway', array( $this, 'checkout_signup' ), 10, 3 );
+		add_action( 'edd_complete_download_purchase', array( $this, 'completed_download_purchase_signup' ), 10, 3 );
 
 		$this->init();
 
@@ -144,9 +145,9 @@ class EDD_Newsletter {
 	}
 
 	/**
-	 * Check if a customer needs to be subscribed
+	 * Check if a customer needs to be subscribed at checkout
 	 */
-	public function check_for_email_signup( $posted, $user_info, $valid_data ) {
+	public function checkout_signup( $posted, $user_info, $valid_data ) {
 
 		// Check for global newsletter
 		if( isset( $posted['edd_' . $this->id . '_signup'] ) ) {
@@ -155,24 +156,40 @@ class EDD_Newsletter {
 
 		}
 
-		// Check for product specific newsletter
-		$cart_items = edd_get_cart_contents();
-		if( ! empty( $cart_items ) ) {
-			foreach( $cart_items as $cart_item ) {
+	}
 
-				$lists = get_post_meta( $cart_item['id'], '_edd_' . esc_attr( $this->id ), true );
+	/**
+	 * Check if a customer needs to be subscribed on completed purchase of specific products
+	 */
+	public function completed_download_purchase_signup( $download_id = 0, $payment_id = 0, $download_type = 'default' ) {
 
-				if( empty( $lists ) )
-					continue;
+		$user_info = edd_get_payment_meta_user_info( $payment_id );
+		$lists     = get_post_meta( $download_id, '_edd_' . $this->id, true );
 
-				foreach( $lists as $list ) {
+		if( 'bundle' == $download_type ) {
 
-					$this->subscribe_email( $user_info, $list );
+			// Get the lists of all items included in the bundle
 
+			$downloads = edd_get_bundled_products( $download_id );
+			if( $downloads ) {
+				foreach( $downloads as $d_id ) {
+					$d_lists = get_post_meta( $d_id, '_edd_' . $this->id, true );
+					$lists   = array_merge( $d_lists, (array) $lists );
 				}
-
 			}
 		}
+
+		if( empty( $lists ) )
+			return;
+
+		$lists = array_unique( $lists );
+
+		foreach( $lists as $list ) {
+
+			$this->subscribe_email( $user_info, $list );
+
+		}
+
 	}
 
 	/**

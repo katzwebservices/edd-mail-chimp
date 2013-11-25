@@ -144,6 +144,8 @@ class EDD_MailChimp extends EDD_Newsletter {
 			}
 		}
 
+		/*
+
 		if( ! class_exists( 'MCAPI' ) ) {
 			require_once( EDD_MAILCHIMP_PATH . '/mailchimp/MCAPI.class.php' );
 		}
@@ -152,6 +154,29 @@ class EDD_MailChimp extends EDD_Newsletter {
 		$opt_in = isset( $edd_options['eddmc_double_opt_in'] );
 
 		if( $api->listSubscribe( $list_id, $user_info['email'], array( 'FNAME' => $user_info['first_name'], 'LNAME' => $user_info['last_name'] ), 'html', $opt_in ) === true ) {
+			return true;
+		}
+
+		*/
+
+		if( ! class_exists( 'MailChimp' ) ) {
+			require_once( EDD_MAILCHIMP_PATH . '/includes/MailChimp.class.php' );
+		}
+
+		$api    = new MailChimp( trim( $edd_options['eddmc_api'] ) );
+		$opt_in = isset( $edd_options['eddmc_double_opt_in'] );
+
+		$result = $api->call('lists/subscribe', array(
+			'id'                => $list_id,
+			'email'             => array( 'email' => $user_info['email'] ),
+			'merge_vars'        => array( 'FNAME' => $user_info['first_name'], 'LNAME' => $user_info['last_name'] ),
+			'double_optin'      => $opt_in,
+			'update_existing'   => true,
+			'replace_interests' => false,
+			'send_welcome'      => false,
+		));
+		
+		if( $result ) {
 			return true;
 		}
 

@@ -3,7 +3,7 @@
 Plugin Name: Easy Digital Downloads - Mail Chimp
 Plugin URL: http://easydigitaldownloads.com/extension/mail-chimp
 Description: Include a Mail Chimp signup option with your Easy Digital Downloads checkout
-Version: 2.1
+Version: 2.2
 Author: Pippin Williamson
 Author URI: http://pippinsplugins.com
 Contributors: Pippin Williamson
@@ -22,7 +22,7 @@ define( 'EDD_MAILCHIMP_PATH', dirname( __FILE__ ) );
 if( ! class_exists( 'EDD_License' ) ) {
 	include( dirname( __FILE__ ) . '/EDD_License_Handler.php' );
 }
-$eddmc_license = new EDD_License( __FILE__, EDD_MAILCHIMP_PRODUCT_NAME, '2.1', 'Pippin Williamson' );
+$eddmc_license = new EDD_License( __FILE__, EDD_MAILCHIMP_PRODUCT_NAME, '2.2', 'Pippin Williamson' );
 
 
 if( ! class_exists( 'EDD_Newsletter' ) ) {

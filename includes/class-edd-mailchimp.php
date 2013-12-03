@@ -33,20 +33,23 @@ class EDD_MailChimp extends EDD_Newsletter {
 
 		if( ! empty( $edd_options['eddmc_api'] ) ) {
 
-			if( ! class_exists( 'MCAPI' ) )
-				require_once( EDD_MAILCHIMP_PATH . '/mailchimp/MCAPI.class.php' );
-
 			$list_data = get_transient( 'edd_mailchimp_lists' );
 			if( false === $list_data ) {
 
-				$api = new MCAPI( $edd_options['eddmc_api'] );
-				$list_data = $api->lists();
+				if( ! class_exists( 'EDD_MailChimp_API' ) ) {
+					require_once( EDD_MAILCHIMP_PATH . '/includes/MailChimp.class.php' );
+				}
+
+				$api       = new EDD_MailChimp_API( trim( $edd_options['eddmc_api'] ) );
+				$list_data = $api->call('lists/list');
+
 				set_transient( 'edd_mailchimp_lists', $list_data, 24*24*24 );
 			}
+			
 			if( $list_data ) {
-				foreach( $list_data['data'] as $key => $list ) {
+				foreach( $list_data->data as $key => $list ) {
 
-					$this->lists[ $list['id'] ] = $list['name'];
+					$this->lists[ $list->id ] = $list->name;
 
 				}
 			}
@@ -127,7 +130,7 @@ class EDD_MailChimp extends EDD_Newsletter {
 	/**
 	 * Subscribe an email to a list
 	 */
-	public function subscribe_email( $user_info = array(), $list_id = false ) {
+	public function subscribe_email( $user_info = array(), $list_id = false, $opt_in_overridde = false ) {
 
 		global $edd_options;
 
@@ -144,27 +147,12 @@ class EDD_MailChimp extends EDD_Newsletter {
 			}
 		}
 
-		/*
-
-		if( ! class_exists( 'MCAPI' ) ) {
-			require_once( EDD_MAILCHIMP_PATH . '/mailchimp/MCAPI.class.php' );
-		}
-
-		$api    = new MCAPI( trim( $edd_options['eddmc_api'] ) );
-		$opt_in = isset( $edd_options['eddmc_double_opt_in'] );
-
-		if( $api->listSubscribe( $list_id, $user_info['email'], array( 'FNAME' => $user_info['first_name'], 'LNAME' => $user_info['last_name'] ), 'html', $opt_in ) === true ) {
-			return true;
-		}
-
-		*/
-
-		if( ! class_exists( 'MailChimp' ) ) {
+		if( ! class_exists( 'EDD_MailChimp_API' ) ) {
 			require_once( EDD_MAILCHIMP_PATH . '/includes/MailChimp.class.php' );
 		}
 
-		$api    = new MailChimp( trim( $edd_options['eddmc_api'] ) );
-		$opt_in = isset( $edd_options['eddmc_double_opt_in'] );
+		$api    = new EDD_MailChimp_API( trim( $edd_options['eddmc_api'] ) );
+		$opt_in = isset( $edd_options['eddmc_double_opt_in'] ) && ! $opt_in_overridde;
 
 		$result = $api->call('lists/subscribe', array(
 			'id'                => $list_id,

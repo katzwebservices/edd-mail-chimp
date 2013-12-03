@@ -2,19 +2,16 @@
 /**
  * Super-simple, minimum abstraction MailChimp API v2 wrapper
  * 
- * Requires curl (I know, right?)
  * This probably has more comments than code.
  * 
- * @author Drew McLellan <drew.mclellan@gmail.com>
+ * @author Based on class by Drew McLellan <drew.mclellan@gmail.com>
  * @version 1.0
  */
-class MailChimp
+class EDD_MailChimp_API
 {
 	private $api_key;
 	private $api_endpoint = 'https://<dc>.api.mailchimp.com/2.0/';
 	private $verify_ssl   = false;
-
-
 
 	/**
 	 * Create a new instance
@@ -27,9 +24,6 @@ class MailChimp
 		$this->api_endpoint = str_replace('<dc>', $datacentre, $this->api_endpoint);
 	}
 
-
-
-
 	/**
 	 * Call an API method. Every request needs the API key, so that is added automatically -- you don't need to pass it in.
 	 * @param  string $method The API method to call, e.g. 'lists/list'
@@ -40,9 +34,6 @@ class MailChimp
 	{
 		return $this->_raw_request($method, $args);
 	}
-
-
-
 
 	/**
 	 * Performs the underlying HTTP request. Not very exciting
@@ -56,20 +47,22 @@ class MailChimp
 
 		$url = $this->api_endpoint.'/'.$method.'.json';
 
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-		curl_setopt($ch, CURLOPT_USERAGENT, 'PHP-MCAPI/2.0');		
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($args));
-		$result = curl_exec($ch);
-		$result = curl_exec($ch);
-		curl_close($ch);
+		$request_args = array(
+			'method'      => 'POST',
+			'timeout'     => 20,
+			'redirection' => 5,
+			'httpversion' => '1.0',
+			'blocking'    => true,
+			'headers'     => array(
+				'content-type' => 'application/json'
+			),
+			'body'        => json_encode( $args ),
+		);
 
-		return $result ? json_decode($result, true) : false;
+		$request = wp_remote_post( $url, $request_args );
+
+		return is_wp_error( $request ) ? false : json_decode( wp_remote_retrieve_body( $request ) );
+
 	}
 
 }

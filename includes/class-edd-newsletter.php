@@ -174,7 +174,9 @@ class EDD_Newsletter {
 			if( $downloads ) {
 				foreach( $downloads as $d_id ) {
 					$d_lists = get_post_meta( $d_id, '_edd_' . $this->id, true );
-					$lists   = array_merge( $d_lists, (array) $lists );
+					if ( is_array( $d_lists ) ) {
+						$lists = array_merge( $d_lists, (array) $lists );
+					}
 				}
 			}
 		}

@@ -17,7 +17,7 @@ class EDD_MailChimp extends EDD_Newsletter {
 		if( ! empty( $edd_options['eddmc_label'] ) ) {
 			$this->checkout_label = trim( $edd_options['eddmc_label'] );
 		} else {
-			$this->checkout_label = 'Signup for the newsletter';
+			$this->checkout_label = __('Signup for the newsletter', 'eddmc');
 		}
 
 		add_filter( 'edd_settings_extensions_sanitize', array( $this, 'save_settings' ) );
@@ -100,7 +100,7 @@ class EDD_MailChimp extends EDD_Newsletter {
 			array(
 				'id'      => 'eddmc_double_opt_in',
 				'name'    => __( 'Double Opt-In', 'eddmc' ),
-				'desc'    => __( 'When checked, users will be sent a confirmation email after signing up, and will only be adding once they have confirmed the subscription.', 'eddmc' ),
+				'desc'    => __( 'When checked, users will be sent a confirmation email after signing up, and will only be added once they have confirmed the subscription.', 'eddmc' ),
 				'type'    => 'checkbox'
 			)
 		);

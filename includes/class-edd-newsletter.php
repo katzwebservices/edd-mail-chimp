@@ -210,7 +210,7 @@ class EDD_Newsletter {
 
 		global $post;
 
-		echo '<p>' . __( 'Select the lists you wish buyers to be subscribed to when purchasing.' ) . '</p>';
+		echo '<p>' . __( 'Select the lists you wish buyers to be subscribed to when purchasing.', 'eddmc' ) . '</p>';
 
 		$checked = (array) get_post_meta( $post->ID, '_edd_' . esc_attr( $this->id ), true );
 		foreach( $this->get_lists() as $list_id => $list_name ) {

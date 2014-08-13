@@ -36,21 +36,21 @@ class EDD_MailChimp extends EDD_Newsletter {
 			$list_data = get_transient( 'edd_mailchimp_lists' );
 			if( false === $list_data ) {
 
-				if( ! class_exists( 'EDD_MailChimp_API' ) ) {
-					require_once( EDD_MAILCHIMP_PATH . '/includes/MailChimp.class.php' );
+				$mailchimp = new Mailchimp( trim( $edd_options['eddmc_api'] ) );
+
+				try {
+					$list_data = $mailchimp->call('lists/list', array());
+					set_transient( 'edd_mailchimp_lists', $list_data, 24*24*24 );
+				} catch (\Mailchimp_Error $e) {
+					edd_record_log( __('EDD MailChimp Error', 'eddmc'), __('Could not retrieve MailChimp lists: ', 'eddmc') . $e->getMessage(), 0, 'api_request' );
+					return array();
 				}
 
-				$api       = new EDD_MailChimp_API( trim( $edd_options['eddmc_api'] ) );
-				$list_data = $api->call('lists/list');
-
-				set_transient( 'edd_mailchimp_lists', $list_data, 24*24*24 );
 			}
 			
 			if( $list_data ) {
-				foreach( $list_data->data as $key => $list ) {
-
-					$this->lists[ $list->id ] = $list->name;
-
+				foreach( $list_data['data'] as $key => $list ) {
+					$this->lists[ $list['id'] ] = $list['name'];
 				}
 			}
 		}
@@ -147,29 +147,24 @@ class EDD_MailChimp extends EDD_Newsletter {
 			}
 		}
 
-		if( ! class_exists( 'EDD_MailChimp_API' ) ) {
-			require_once( EDD_MAILCHIMP_PATH . '/includes/MailChimp.class.php' );
-		}
-
-		$api    = new EDD_MailChimp_API( trim( $edd_options['eddmc_api'] ) );
 		$opt_in = isset( $edd_options['eddmc_double_opt_in'] ) && ! $opt_in_overridde;
+		$mailchimp = new Mailchimp( trim( $edd_options['eddmc_api'] ) );
 
-		$result = $api->call('lists/subscribe', array(
-			'id'                => $list_id,
-			'email'             => array( 'email' => $user_info['email'] ),
-			'merge_vars'        => array( 'FNAME' => $user_info['first_name'], 'LNAME' => $user_info['last_name'] ),
-			'double_optin'      => $opt_in,
-			'update_existing'   => true,
-			'replace_interests' => false,
-			'send_welcome'      => false,
-		));
-		
-		if( $result ) {
+		try {
+			$result = $mailchimp->call('lists/subscribe', array(
+				'id'                => $list_id,
+				'email'             => array( 'email' => $user_info['email'] ),
+				'merge_vars'        => array( 'FNAME' => $user_info['first_name'], 'LNAME' => $user_info['last_name'] ),
+				'double_optin'      => $opt_in,
+				'update_existing'   => true,
+				'replace_interests' => false,
+				'send_welcome'      => false,
+			));
 			return true;
+		} catch (\Mailchimp_Error $e) {
+			edd_record_log( __('EDD MailChimp Error', 'eddmc'), __('Could not subscribe customer to newsletter: ', 'eddmc') . $e->getMessage(), 0, 'api_request' );
+			return false;
 		}
-
-		return false;
-
 	}
 
 }

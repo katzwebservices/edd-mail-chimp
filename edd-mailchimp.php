@@ -24,6 +24,7 @@ if( ! class_exists( 'EDD_License' ) ) {
 }
 $eddmc_license = new EDD_License( __FILE__, EDD_MAILCHIMP_PRODUCT_NAME, '2.2.1', 'Pippin Williamson' );
 
+require 'vendor/autoload.php';
 
 if( ! class_exists( 'EDD_Newsletter' ) ) {
 	include( dirname( __FILE__ ) . '/includes/class-edd-newsletter.php' );

@@ -142,7 +142,7 @@ class EDD_Ecommerce_360 {
       try {
         $result = $mailchimp->call('ecomm/order-add', array('order' => $order) );
         edd_insert_payment_note( $payment_id, __('Order details have been added to MailChimp successfully', 'eddmc') );
-      } catch (\Mailchimp_Error $e) {
+      } catch (Exception $e) {
         edd_insert_payment_note( $payment_id, __('MailChimp Ecommerce360 Error: ', 'eddmc') . $e->getMessage() );
         return FALSE;
       }
@@ -179,7 +179,7 @@ class EDD_Ecommerce_360 {
       $result = $mailchimp->call('ecomm/order-del', array('store_id' => self::_edd_ec360_get_store_id(), 'order_id' => $payment_id ) );
       edd_insert_payment_note( $payment_id, __('Order details have been removed from MailChimp successfully', 'eddmc') );
       return TRUE;
-    } catch (\Mailchimp_Error $e) {
+    } catch (Exception $e) {
       edd_insert_payment_note( $payment_id, __('MailChimp Ecommerce360 Error: ', 'eddmc') . $e->getMessage() );
       return FALSE;
     }

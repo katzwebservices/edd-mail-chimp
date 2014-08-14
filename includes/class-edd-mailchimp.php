@@ -41,13 +41,13 @@ class EDD_MailChimp extends EDD_Newsletter {
 				try {
 					$list_data = $mailchimp->call('lists/list', array());
 					set_transient( 'edd_mailchimp_lists', $list_data, 24*24*24 );
-				} catch (\Mailchimp_Error $e) {
+				} catch (Exception $e) {
 					edd_record_log( __('EDD MailChimp Error', 'eddmc'), __('Could not retrieve MailChimp lists: ', 'eddmc') . $e->getMessage(), 0, 'api_request' );
 					return array();
 				}
 
 			}
-			
+
 			if( $list_data ) {
 				foreach( $list_data['data'] as $key => $list ) {
 					$this->lists[ $list['id'] ] = $list['name'];
@@ -161,7 +161,7 @@ class EDD_MailChimp extends EDD_Newsletter {
 				'send_welcome'      => false,
 			));
 			return true;
-		} catch (\Mailchimp_Error $e) {
+		} catch (Exception $e) {
 			edd_record_log( __('EDD MailChimp Error', 'eddmc'), __('Could not subscribe customer to newsletter: ', 'eddmc') . $e->getMessage(), 0, 'api_request' );
 			return false;
 		}

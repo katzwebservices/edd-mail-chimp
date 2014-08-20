@@ -32,4 +32,4 @@ include( dirname( __FILE__ ) . '/includes/class-edd-mailchimp.php' );
 include( dirname( __FILE__ ) . '/includes/class-edd-ecommerce360.php' );
 
 $edd_mc    = new EDD_MailChimp( 'mailchimp', 'Mail Chimp' );
-$edd_mc360 = new EDD_Ecommerce_360;
+$edd_mc360 = new EDD_MC_Ecommerce_360;

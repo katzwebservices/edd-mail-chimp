@@ -7,7 +7,7 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       2.3
 */
-class EDD_Ecommerce_360 {
+class EDD_MC_Ecommerce_360 {
 
   /**
    * MailChimp API Key

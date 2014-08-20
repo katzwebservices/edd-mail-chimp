@@ -20,7 +20,7 @@ class EDD_Ecommerce_360 {
 
     $api_key = edd_get_option( 'eddmc_api', '' );
 
-    if ( ! empty( $api_key ) {
+    if ( ! empty( $api_key ) ) {
       $this->key = trim( $api_key );
     }
 

@@ -18,6 +18,10 @@ class EDD_MC_Ecommerce_360 {
 
   public function __construct() {
 
+    if( ! function_exists( 'edd_get_option' ) ) {
+      return;
+    }
+
     $api_key = edd_get_option( 'eddmc_api', '' );
 
     if ( ! empty( $api_key ) ) {

@@ -33,7 +33,7 @@ class EDD_MailChimp extends EDD_Newsletter {
 
 		if( ! empty( $edd_options['eddmc_api'] ) ) {
 
-			$list_data = get_transient( 'edd_mailchimp_lists' );
+			$list_data = get_transient( 'edsd_mailchimp_lists' );
 			if( false === $list_data ) {
 
 				$options = array(
@@ -53,7 +53,8 @@ class EDD_MailChimp extends EDD_Newsletter {
 			}
 
 			if( $list_data ) {
-				foreach( $list_data['data'] as $key => $list ) {
+				foreach( (array) $list_data['data'] as $key => $list ) {
+					$list = (array) $list;
 					$this->lists[ $list['id'] ] = $list['name'];
 				}
 			}

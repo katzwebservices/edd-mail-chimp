@@ -24,7 +24,7 @@ class EDD_Ecommerce_360 {
       $this->key = trim( $api_key );
     }
 
-    add_action( 'init', array( $this, 'set_ecommerce360_cookie') );
+    add_action( 'init', array( $this, 'set_ecommerce360_cookie' ) );
 
     add_action( 'edd_complete_purchase', array( $this, 'record_ecommerce360_purchase' ) );
     add_action( 'edd_update_payment_status', array( $this, 'delete_ecommerce360_purchase' ), 10, 3 );
@@ -36,7 +36,7 @@ class EDD_Ecommerce_360 {
    * @param  integer $payment_id    [description]
    * @return bool
    */
-  public function record_ecommerce360_purchase($payment_id = 0) {
+  public function record_ecommerce360_purchase( $payment_id = 0 ) {
 
     // Make sure an API key has been entered
     if ( empty( $this->key ) ) {
@@ -63,7 +63,7 @@ class EDD_Ecommerce_360 {
 
         // Get the categories that this download belongs to, if any
         $post = edd_get_download( $download['id'] );
-        $terms = get_the_terms( $download['id'], 'download_category');
+        $terms = get_the_terms( $download['id'], 'download_category' );
 
         if ( $terms && ! is_wp_error( $terms ) ) {
           $categories = array();
@@ -120,20 +120,20 @@ class EDD_Ecommerce_360 {
       );
 
       // Set Ecommerce360 variables if they exist
-      $mc_cid_cookie = self::_edd_ec360_get_cookie_id('campaign');
-      $mc_eid_cookie = self::_edd_ec360_get_cookie_id('email');
+      $mc_cid_cookie = self::_edd_ec360_get_cookie_id( 'campaign' );
+      $mc_eid_cookie = self::_edd_ec360_get_cookie_id( 'email' );
 
-      if ( isset( $_COOKIE[$mc_cid_cookie] ) ) {
-        $order['campaign_id'] = $_COOKIE[$mc_cid_cookie];
-        setcookie ($mc_cid_cookie, "", time() - 3600); // Kill it
+      if ( isset( $_COOKIE[ $mc_cid_cookie ] ) ) {
+        $order['campaign_id'] = $_COOKIE[ $mc_cid_cookie ];
+        setcookie( $mc_cid_cookie, "", time() - 3600 ); // Kill it
       }
 
       if ( isset( $_COOKIE[$mc_eid_cookie] ) ) {
-        $order['email_id'] = $_COOKIE[$mc_eid_cookie];
-        setcookie ($mc_eid_cookie, "", time() - 3600); // With fire
+        $order['email_id'] = $_COOKIE[ $mc_eid_cookie ];
+        setcookie( $mc_eid_cookie, "", time() - 3600 ); // With fire
       }
 
-      if ($tax != 0) {
+      if ( $tax != 0 ) {
         $order['tax'] = $tax; // double, optional
       }
 
@@ -141,10 +141,10 @@ class EDD_Ecommerce_360 {
       $mailchimp = new Mailchimp( $this->key );
 
       try {
-        $result = $mailchimp->call('ecomm/order-add', array('order' => $order) );
-        edd_insert_payment_note( $payment_id, __('Order details have been added to MailChimp successfully', 'eddmc') );
+        $result = $mailchimp->call( 'ecomm/order-add', array( 'order' => $order ) );
+        edd_insert_payment_note( $payment_id, __( 'Order details have been added to MailChimp successfully', 'eddmc' ) );
       } catch (Exception $e) {
-        edd_insert_payment_note( $payment_id, __('MailChimp Ecommerce360 Error: ', 'eddmc') . $e->getMessage() );
+        edd_insert_payment_note( $payment_id, __( 'MailChimp Ecommerce360 Error: ', 'eddmc' ) . $e->getMessage() );
         return FALSE;
       }
 
@@ -159,7 +159,7 @@ class EDD_Ecommerce_360 {
    *
    * @return bool
    */
-  public function delete_ecommerce360_purchase($payment_id, $new_status, $old_status) {
+  public function delete_ecommerce360_purchase( $payment_id, $new_status, $old_status) {
     if ( 'publish' != $old_status && 'revoked' != $old_status ) {
       return;
     }
@@ -177,11 +177,11 @@ class EDD_Ecommerce_360 {
     $mailchimp = new Mailchimp( $this->key );
 
     try {
-      $result = $mailchimp->call('ecomm/order-del', array('store_id' => self::_edd_ec360_get_store_id(), 'order_id' => $payment_id ) );
-      edd_insert_payment_note( $payment_id, __('Order details have been removed from MailChimp successfully', 'eddmc') );
+      $result = $mailchimp->call( 'ecomm/order-del', array( 'store_id' => self::_edd_ec360_get_store_id(), 'order_id' => $payment_id ) );
+      edd_insert_payment_note( $payment_id, __( 'Order details have been removed from MailChimp successfully', 'eddmc' ) );
       return TRUE;
     } catch (Exception $e) {
-      edd_insert_payment_note( $payment_id, __('MailChimp Ecommerce360 Error: ', 'eddmc') . $e->getMessage() );
+      edd_insert_payment_note( $payment_id, __( 'MailChimp Ecommerce360 Error: ', 'eddmc' ) . $e->getMessage() );
       return FALSE;
     }
   }
@@ -199,14 +199,14 @@ class EDD_Ecommerce_360 {
 
     if ( ! empty( $mc_cid ) AND ! empty( $mc_eid ) ) {
       setcookie( 
-        self::_edd_ec360_get_cookie_id('campaign'), 
-        filter_var( $mc_cid , FILTER_SANITIZE_STRING), 
-        strtotime('+1 month')
+        self::_edd_ec360_get_cookie_id( 'campaign' ), 
+        filter_var( $mc_cid , FILTER_SANITIZE_STRING ), 
+        strtotime( '+1 month' )
       );
       setcookie( 
-        self::_edd_ec360_get_cookie_id('email'), 
-        filter_var( $mc_eid, FILTER_SANITIZE_STRING), 
-        strtotime('+1 month')
+        self::_edd_ec360_get_cookie_id( 'email' ), 
+        filter_var( $mc_eid, FILTER_SANITIZE_STRING ), 
+        strtotime( '+1 month' )
       );
     }
   }
@@ -217,9 +217,9 @@ class EDD_Ecommerce_360 {
    * @param  string $type campaign | email
    * @return string Key identifier for stored cookies
    */
-  protected function _edd_ec360_get_cookie_id($type = 'campaign') {
-    $prefix = substr($type, 0, 1);
-    return sprintf('edd_mc360_%1$s_%2$sid', substr( self::_edd_ec360_get_store_id(), 0, 10 ), $prefix );
+  protected function _edd_ec360_get_cookie_id( $type = 'campaign' ) {
+    $prefix = substr( $type, 0, 1);
+    return sprintf( 'edd_mc360_%1$s_%2$sid', substr( self::_edd_ec360_get_store_id(), 0, 10 ), $prefix );
   }
 
   /**

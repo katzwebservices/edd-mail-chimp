@@ -17,10 +17,11 @@ class EDD_Ecommerce_360 {
   public $key = NULL;
 
   public function __construct() {
-    global $edd_options;
 
-    if ( ! empty( $edd_options['eddmc_api'] ) ) {
-      $this->key = $edd_options['eddmc_api'];
+    $api_key = edd_get_option( 'eddmc_api', '' );
+
+    if ( ! empty( $api_key ) {
+      $this->key = trim( $api_key );
     }
 
     add_action( 'init', array( $this, 'set_ecommerce360_cookie') );

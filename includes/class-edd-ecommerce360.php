@@ -203,7 +203,7 @@ class EDD_MC_Ecommerce_360 {
     $mc_cid = isset( $_GET['mc_cid'] ) ? $_GET['mc_cid'] : '';
     $mc_eid = isset( $_GET['mc_eid'] ) ? $_GET['mc_eid'] : '';
 
-    if ( ! empty( $mc_cid ) AND ! empty( $mc_eid ) ) {
+    if ( ! empty( $mc_cid ) && ! empty( $mc_eid ) ) {
       setcookie( 
         self::_edd_ec360_get_cookie_id( 'campaign' ), 
         filter_var( $mc_cid , FILTER_SANITIZE_STRING ), 

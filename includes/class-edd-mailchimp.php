@@ -36,7 +36,11 @@ class EDD_MailChimp extends EDD_Newsletter {
 			$list_data = get_transient( 'edd_mailchimp_lists' );
 			if( false === $list_data ) {
 
-				$mailchimp = new Mailchimp( trim( $edd_options['eddmc_api'] ) );
+				$options = array(
+					'CURLOPT_FOLLOWLOCATION' => false
+				);
+
+				$mailchimp = new Mailchimp( trim( $edd_options['eddmc_api'] ), $options );
 
 				try {
 					$list_data = $mailchimp->call('lists/list', array());
@@ -148,7 +152,12 @@ class EDD_MailChimp extends EDD_Newsletter {
 		}
 
 		$opt_in = isset( $edd_options['eddmc_double_opt_in'] ) && ! $opt_in_overridde;
-		$mailchimp = new Mailchimp( trim( $edd_options['eddmc_api'] ) );
+
+		$options = array(
+			'CURLOPT_FOLLOWLOCATION' => false
+		);
+
+		$mailchimp = new Mailchimp( trim( $edd_options['eddmc_api'] ), $options );
 
 		try {
 			$result = $mailchimp->call('lists/subscribe', array(

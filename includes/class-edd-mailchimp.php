@@ -42,7 +42,7 @@ class EDD_MailChimp extends EDD_Newsletter {
 				set_transient( 'edd_mailchimp_list_data', $list_data, 24*24*24 );
 			}
 
-			if( $list_data ) {
+			if( ! empty( $list_data ) ) {
 				foreach( $list_data->data as $key => $list ) {
 
 					$this->lists[ $list->id ] = $list->name;

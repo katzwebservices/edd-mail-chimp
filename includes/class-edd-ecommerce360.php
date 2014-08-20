@@ -141,7 +141,7 @@ class EDD_MC_Ecommerce_360 {
       $options = array(
         'CURLOPT_FOLLOWLOCATION' => false
       );
-      $mailchimp = new Mailchimp( $this->key, $options );
+      $mailchimp = new EDD_MailChimp_API( $this->key, $options );
 
       try {
         $result = $mailchimp->call( 'ecomm/order-add', array( 'order' => $order ) );
@@ -180,7 +180,7 @@ class EDD_MC_Ecommerce_360 {
     $options = array(
       'CURLOPT_FOLLOWLOCATION' => false
     );
-    $mailchimp = new Mailchimp( $this->key, $options );
+    $mailchimp = new EDD_MailChimp_API( $this->key, $options );
 
     try {
       $result = $mailchimp->call( 'ecomm/order-del', array( 'store_id' => self::_edd_ec360_get_store_id(), 'order_id' => $payment_id ) );

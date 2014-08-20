@@ -33,29 +33,29 @@ class EDD_MailChimp extends EDD_Newsletter {
 
 		if( ! empty( $edd_options['eddmc_api'] ) ) {
 
-			$list_data = get_transient( 'edsd_mailchimp_lists' );
+			$list_data = get_transient( 'edd_mailchimp_list_data' );
 			if( false === $list_data ) {
 
 				$options = array(
 					'CURLOPT_FOLLOWLOCATION' => false
 				);
 
-				$mailchimp = new Mailchimp( trim( $edd_options['eddmc_api'] ), $options );
+				$mailchimp = new EDD_MailChimp_API( trim( $edd_options['eddmc_api'] ), $options );
 
 				try {
 					$list_data = $mailchimp->call('lists/list', array());
-					set_transient( 'edd_mailchimp_lists', $list_data, 24*24*24 );
+					set_transient( 'edd_mailchimp_list_data', $list_data, 24*24*24 );
 				} catch (Exception $e) {
 					edd_record_log( __('EDD MailChimp Error', 'eddmc'), __('Could not retrieve MailChimp lists: ', 'eddmc') . $e->getMessage(), 0, 'api_request' );
 					return array();
 				}
 
 			}
+			//echo '<pre>'; print_r( $list_data ); echo '</pre>'; exit;
 
 			if( $list_data ) {
-				foreach( (array) $list_data['data'] as $key => $list ) {
-					$list = (array) $list;
-					$this->lists[ $list['id'] ] = $list['name'];
+				foreach( $list_data->data as $key => $list ) {
+					$this->lists[ $list->id ] = $list->name;
 				}
 			}
 		}
@@ -158,7 +158,7 @@ class EDD_MailChimp extends EDD_Newsletter {
 			'CURLOPT_FOLLOWLOCATION' => false
 		);
 
-		$mailchimp = new Mailchimp( trim( $edd_options['eddmc_api'] ), $options );
+		$mailchimp = new EDD_MailChimp_API( trim( $edd_options['eddmc_api'] ), $options );
 
 		try {
 			$result = $mailchimp->call('lists/subscribe', array(

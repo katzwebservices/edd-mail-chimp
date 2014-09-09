@@ -30,8 +30,46 @@ class EDD_MC_Ecommerce_360 {
 
     add_action( 'init', array( $this, 'set_ecommerce360_session' ) );
 
+    add_action( 'edd_insert_payment', array( $this, 'set_ecommerce360_flags' ), 10, 2 );
     add_action( 'edd_complete_purchase', array( $this, 'record_ecommerce360_purchase' ) );
     add_action( 'edd_update_payment_status', array( $this, 'delete_ecommerce360_purchase' ), 10, 3 );
+  }
+
+  /**
+   * Sets flags in post meta so that we can detect them when completing a purchase via IPN
+   *
+   * @param  integer $payment_id
+   * @param  array $payment_data
+   * @return bool
+   */
+  public function set_ecommerce360_flags( $payment_id = 0, $payment_data = array() ) {
+
+    // Make sure an API key has been entered
+    if ( empty( $this->key ) ) {
+      return FALSE;
+    }
+
+    // Don't record details if we're in test mode
+    if ( edd_is_test_mode() ) {
+      return FALSE;
+    }
+
+    $mc_cid_key  = self::_edd_ec360_get_session_id( 'campaign' );
+    $mc_eid_key  = self::_edd_ec360_get_session_id( 'email' );
+
+    $campaign_id = EDD()->session->get( $mc_cid_key );
+    $email_id    = EDD()->session->get( $mc_eid_key );
+
+    if ( isset( $campaign_id ) && isset( $email_id ) ) {
+
+      add_post_meta( $payment_id, '_edd_mc_campaign_id', $campaign_id, true );
+      add_post_meta( $payment_id, '_edd_mc_email_id', $email_id, true );
+
+      EDD()->session->set( $mc_cid_key, NULL );
+      EDD()->session->set( $mc_eid_key, NULL );
+
+    }
+    
   }
 
   /**
@@ -124,20 +162,15 @@ class EDD_MC_Ecommerce_360 {
       );
 
       // Set Ecommerce360 variables if they exist
-      $mc_cid_key = self::_edd_ec360_get_session_id( 'campaign' );
-      $mc_eid_key = self::_edd_ec360_get_session_id( 'email' );
-
-      $campaign_id = EDD()->session->get( $mc_cid_key );
-      $email_id    = EDD()->session->get( $mc_eid_key );
+      $campaign_id = get_post_meta( $payment_id, '_edd_mc_campaign_id', true );
+      $email_id    = get_post_meta( $payment_id, '_edd_mc_email_id', true );
 
       if ( isset( $campaign_id ) ) {
         $order['campaign_id'] = $campaign_id;
-        EDD()->session->set( $mc_cid_key, NULL ); // Kill it
       }
 
       if ( isset( $email_id ) ) {
         $order['email_id'] = $email_id;
-        EDD()->session->set( $mc_eid_key, NULL ); // With fire
       }
 
       if ( $tax != 0 ) {

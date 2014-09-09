@@ -11,7 +11,7 @@ class EDD_MC_Ecommerce_360 {
 
   /**
    * MailChimp API Key
-   * 
+   *
    * @var string | NULL
    */
   public $key = NULL;
@@ -28,7 +28,7 @@ class EDD_MC_Ecommerce_360 {
       $this->key = trim( $api_key );
     }
 
-    add_action( 'init', array( $this, 'set_ecommerce360_cookie' ) );
+    add_action( 'init', array( $this, 'set_ecommerce360_session' ) );
 
     add_action( 'edd_complete_purchase', array( $this, 'record_ecommerce360_purchase' ) );
     add_action( 'edd_update_payment_status', array( $this, 'delete_ecommerce360_purchase' ), 10, 3 );
@@ -124,17 +124,20 @@ class EDD_MC_Ecommerce_360 {
       );
 
       // Set Ecommerce360 variables if they exist
-      $mc_cid_cookie = self::_edd_ec360_get_cookie_id( 'campaign' );
-      $mc_eid_cookie = self::_edd_ec360_get_cookie_id( 'email' );
+      $mc_cid_key = self::_edd_ec360_get_session_id( 'campaign' );
+      $mc_eid_key = self::_edd_ec360_get_session_id( 'email' );
 
-      if ( isset( $_COOKIE[ $mc_cid_cookie ] ) ) {
-        $order['campaign_id'] = $_COOKIE[ $mc_cid_cookie ];
-        setcookie( $mc_cid_cookie, "", time() - 3600 ); // Kill it
+      $campaign_id = EDD()->session->get( $mc_cid_key );
+      $email_id    = EDD()->session->get( $mc_eid_key );
+
+      if ( isset( $campaign_id ) ) {
+        $order['campaign_id'] = $campaign_id;
+        EDD()->session->set( $mc_cid_key, NULL ); // Kill it
       }
 
-      if ( isset( $_COOKIE[$mc_eid_cookie] ) ) {
-        $order['email_id'] = $_COOKIE[ $mc_eid_cookie ];
-        setcookie( $mc_eid_cookie, "", time() - 3600 ); // With fire
+      if ( isset( $email_id ) ) {
+        $order['email_id'] = $email_id;
+        EDD()->session->set( $mc_eid_key, NULL ); // With fire
       }
 
       if ( $tax != 0 ) {
@@ -203,31 +206,23 @@ class EDD_MC_Ecommerce_360 {
    * @uses campaign UID
    * @uses member email's UID
    */
-  public function set_ecommerce360_cookie() {
+  public function set_ecommerce360_session() {
     $mc_cid = isset( $_GET['mc_cid'] ) ? $_GET['mc_cid'] : '';
     $mc_eid = isset( $_GET['mc_eid'] ) ? $_GET['mc_eid'] : '';
 
     if ( ! empty( $mc_cid ) && ! empty( $mc_eid ) ) {
-      setcookie( 
-        self::_edd_ec360_get_cookie_id( 'campaign' ), 
-        filter_var( $mc_cid , FILTER_SANITIZE_STRING ), 
-        strtotime( '+1 month' )
-      );
-      setcookie( 
-        self::_edd_ec360_get_cookie_id( 'email' ), 
-        filter_var( $mc_eid, FILTER_SANITIZE_STRING ), 
-        strtotime( '+1 month' )
-      );
+      EDD()->session->set( self::_edd_ec360_get_session_id( 'campaign' ), filter_var( $mc_cid , FILTER_SANITIZE_STRING ) );
+      EDD()->session->set( self::_edd_ec360_get_session_id( 'email' ),    filter_var( $mc_eid , FILTER_SANITIZE_STRING ) );
     }
   }
 
   /**
-   * Returns the unique EC360 cookie keys for this EDD installation.
-   * 
+   * Returns the unique EC360 session keys for this EDD installation.
+   *
    * @param  string $type campaign | email
-   * @return string Key identifier for stored cookies
+   * @return string Key identifier for stored sessions
    */
-  protected function _edd_ec360_get_cookie_id( $type = 'campaign' ) {
+  protected function _edd_ec360_get_session_id( $type = 'campaign' ) {
     $prefix = substr( $type, 0, 1);
     return sprintf( 'edd_mc360_%1$s_%2$sid', substr( self::_edd_ec360_get_store_id(), 0, 10 ), $prefix );
   }

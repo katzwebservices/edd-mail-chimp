@@ -222,7 +222,7 @@ class EDD_MC_Ecommerce_360 {
    * @param  string $type campaign | email
    * @return string Key identifier for stored sessions
    */
-  protected function _edd_ec360_get_session_id( $type = 'campaign' ) {
+  protected static function _edd_ec360_get_session_id( $type = 'campaign' ) {
     $prefix = substr( $type, 0, 1);
     return sprintf( 'edd_mc360_%1$s_%2$sid', substr( self::_edd_ec360_get_store_id(), 0, 10 ), $prefix );
   }

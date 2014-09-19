@@ -165,11 +165,11 @@ class EDD_MC_Ecommerce_360 {
       $campaign_id = get_post_meta( $payment_id, '_edd_mc_campaign_id', true );
       $email_id    = get_post_meta( $payment_id, '_edd_mc_email_id', true );
 
-      if ( isset( $campaign_id ) ) {
+      if ( ! empty( $campaign_id ) ) {
         $order['campaign_id'] = $campaign_id;
       }
 
-      if ( isset( $email_id ) ) {
+      if ( ! empty( $email_id ) ) {
         $order['email_id'] = $email_id;
       }
 
@@ -185,6 +185,7 @@ class EDD_MC_Ecommerce_360 {
 
       try {
         $result = $mailchimp->call( 'ecomm/order-add', array( 'order' => $order ) );
+        var_dump( $result ); exit;
         edd_insert_payment_note( $payment_id, __( 'Order details have been added to MailChimp successfully', 'eddmc' ) );
       } catch (Exception $e) {
         edd_insert_payment_note( $payment_id, __( 'MailChimp Ecommerce360 Error: ', 'eddmc' ) . $e->getMessage() );

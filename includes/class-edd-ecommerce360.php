@@ -185,7 +185,6 @@ class EDD_MC_Ecommerce_360 {
 
       try {
         $result = $mailchimp->call( 'ecomm/order-add', array( 'order' => $order ) );
-        var_dump( $result ); exit;
         edd_insert_payment_note( $payment_id, __( 'Order details have been added to MailChimp successfully', 'eddmc' ) );
       } catch (Exception $e) {
         edd_insert_payment_note( $payment_id, __( 'MailChimp Ecommerce360 Error: ', 'eddmc' ) . $e->getMessage() );

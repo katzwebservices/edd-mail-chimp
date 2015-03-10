@@ -55,6 +55,57 @@ class EDD_MailChimp extends EDD_Newsletter {
 	}
 
 	/**
+	* Retrive the list of groupings associated with a list id
+	*
+	* @param  string $list_id     List id for which groupings should be returned
+	* @return array  $groups_data Data about the groups
+	*/
+	public function get_groupings( $list_id ) {
+
+		global $edd_options;
+
+		if( ! empty( $edd_options['eddmc_api'] ) ) {
+
+			$grouping_data = get_transient( 'edd_mailchimp_groupings_' . $list_id );
+
+			if( false === $grouping_data ) {
+
+				if( ! class_exists( 'EDD_MailChimp_API' ) ) {
+					require_once( EDD_MAILCHIMP_PATH . '/includes/MailChimp.class.php' );
+				}
+
+				$api           = new EDD_MailChimp_API( trim( $edd_options['eddmc_api'] ) );
+				$grouping_data = $api->call( 'lists/interest-groupings', array( 'id' => $list_id ) );
+
+				set_transient( 'edd_mailchimp_groupings_' . $list_id, $grouping_data, 24*24*24 );
+			}
+
+			$groups_data = array();
+
+			if( $grouping_data && ! isset( $grouping_data->status ) ) {
+
+				foreach( $grouping_data as $grouping ) {
+
+					$grouping_id   = $grouping->id;
+					$grouping_name = $grouping->name;
+
+					foreach( $grouping->groups as $groups ) {
+
+						$group_name = $groups->name;
+						$groups_data["$list_id|$grouping_id|$group_name"] = $grouping_name . ' - ' . $group_name;
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return $groups_data;
+	}
+
+	/**
 	 * Registers the plugin settings
 	 */
 	public function settings( $settings ) {
@@ -150,15 +201,34 @@ class EDD_MailChimp extends EDD_Newsletter {
 		$api    = new EDD_MailChimp_API( trim( $edd_options['eddmc_api'] ) );
 		$opt_in = isset( $edd_options['eddmc_double_opt_in'] ) && ! $opt_in_overridde;
 
-		$result = $api->call('lists/subscribe', array(
+		$merge_vars = array( 'FNAME' => $user_info['first_name'], 'LNAME' => $user_info['last_name'] );
+
+		if( strpos( $list_id, '|' ) != FALSE ) {
+			$parts       = explode( '|', $list_id );
+
+			$list_id     = $parts[0];
+			$grouping_id = $parts[1];
+			$group_name  = $parts[2];
+
+			$groupings   = array(
+				array(
+					'id'     => $grouping_id,
+					'groups' => array( $group_name )
+				)
+			);
+
+			$merge_vars['groupings'] = $groupings;
+		}
+
+		$result = $api->call('lists/subscribe', apply_filters( 'edd_mc_subscribe_vars', array(
 			'id'                => $list_id,
 			'email'             => array( 'email' => $user_info['email'] ),
-			'merge_vars'        => array( 'FNAME' => $user_info['first_name'], 'LNAME' => $user_info['last_name'] ),
+			'merge_vars'        => $merge_vars,
 			'double_optin'      => $opt_in,
 			'update_existing'   => true,
 			'replace_interests' => false,
 			'send_welcome'      => false,
-		));
+		) ) );
 
 		if( $result ) {
 			return true;

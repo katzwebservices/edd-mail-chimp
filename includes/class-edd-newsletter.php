@@ -38,6 +38,16 @@ class EDD_Newsletter {
 	}
 
 	/**
+     * Retrieve groups for a list
+     *
+     * @param  string $list_id     List id for which groupings should be returned
+     * @return array  $groups_data Data about the groups
+     */
+	public function get_groupings( $list_id = '' ) {
+		return array();
+	}
+
+	/**
 	 * Determines if the signup checkbox should be shown on checkout
 	 *
 	 */
@@ -218,6 +228,16 @@ class EDD_Newsletter {
 				echo '<input type="checkbox" name="_edd_' . esc_attr( $this->id ) . '[]" value="' . esc_attr( $list_id ) . '"' . checked( true, in_array( $list_id, $checked ), false ) . '>';
 				echo '&nbsp;' . $list_name;
 			echo '</label><br/>';
+
+			$groupings = $this->get_groupings( $list_id );
+			if( ! empty( $groupings ) ) {
+				foreach ( $groupings as $group_id => $group_name ){
+					echo '<label>';
+						echo '&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="_edd_' . esc_attr( $this->id ) . '[]" value="' . esc_attr( $group_id ) . '"' . checked( true, in_array( $group_id, $checked ), false ) . '>';
+						echo '&nbsp;' . $group_name;
+					echo '</label><br/>';
+				}
+			}
 		}
 	}
 

@@ -7,8 +7,8 @@
  * @author Based on class by Drew McLellan <drew.mclellan@gmail.com>
  * @version 1.0
  */
-class EDD_MailChimp_API
-{
+class EDD_MailChimp_API {
+
 	private $api_key;
 	private $api_endpoint = 'https://<dc>.api.mailchimp.com/2.0/';
 	private $verify_ssl   = false;
@@ -17,11 +17,10 @@ class EDD_MailChimp_API
 	 * Create a new instance
 	 * @param string $api_key Your MailChimp API key
 	 */
-	function __construct($api_key, $options = array())
-	{
+	function __construct( $api_key, $options = array() ) {
 		$this->api_key = $api_key;
-		list(, $datacentre) = explode('-', $this->api_key);
-		$this->api_endpoint = str_replace('<dc>', $datacentre, $this->api_endpoint);
+		list(, $datacentre) = explode( '-', $this->api_key );
+		$this->api_endpoint = str_replace( '<dc>', $datacentre, $this->api_endpoint );
 	}
 
 	/**
@@ -30,9 +29,8 @@ class EDD_MailChimp_API
 	 * @param  array  $args   An array of arguments to pass to the method. Will be json-encoded for you.
 	 * @return array          Associative array of json decoded API response.
 	 */
-	public function call($method, $args=array())
-	{
-		return $this->_raw_request($method, $args);
+	public function call( $method, $args = array() ) {
+		return $this->_raw_request( $method, $args);
 	}
 
 	/**
@@ -41,8 +39,7 @@ class EDD_MailChimp_API
 	 * @param  array  $args   Assoc array of parameters to be passed
 	 * @return array          Assoc array of decoded result
 	 */
-	private function _raw_request($method, $args=array())
-	{      
+	private function _raw_request( $method, $args = array() ) {      
 		$args['apikey'] = $this->api_key;
 
 		$url = $this->api_endpoint.'/'.$method.'.json';

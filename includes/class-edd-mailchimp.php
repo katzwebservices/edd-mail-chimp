@@ -60,7 +60,7 @@ class EDD_MailChimp extends EDD_Newsletter {
 	* @param  string $list_id     List id for which groupings should be returned
 	* @return array  $groups_data Data about the groups
 	*/
-	public function get_groupings( $list_id ) {
+	public function get_groupings( $list_id = '' ) {
 
 		global $edd_options;
 

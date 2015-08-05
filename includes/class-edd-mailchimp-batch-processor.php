@@ -17,14 +17,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * EDD_Batch_Payments_Export Class
  *
- * @since 2.4
+ * @since 2.5.3
  */
 class EDD_Batch_Mailchimp_Ecommerce extends EDD_Batch_Export {
 
 	/**
 	 * Our export type. Used for export-type specific filters/actions
 	 * @var string
-	 * @since 2.4
+	 * @since 2.5.3
 	 */
 	public $export_type = 'mailchimp_ecommerce_data';
 
@@ -32,13 +32,12 @@ class EDD_Batch_Mailchimp_Ecommerce extends EDD_Batch_Export {
 	 * Get the Export Data
 	 *
 	 * @access public
-	 * @since 2.4
+	 * @since 2.5.3
 	 * @global object $wpdb Used to query the database using the WordPress
 	 *   Database API
 	 * @return array $data The data for the CSV file
 	 */
 	public function send_data() {
-		global $wpdb;
 
 		$data = array();
 
@@ -59,8 +58,6 @@ class EDD_Batch_Mailchimp_Ecommerce extends EDD_Batch_Export {
 			);
 
 		}
-
-		//echo json_encode($args ); exit;
 
 		$payments = edd_get_payments( $args );
 
@@ -85,7 +82,7 @@ class EDD_Batch_Mailchimp_Ecommerce extends EDD_Batch_Export {
 	/**
 	 * Return the calculated completion percentage
 	 *
-	 * @since 2.4
+	 * @since 2.5.3
 	 * @return int
 	 */
 	public function get_percentage_complete() {
@@ -114,7 +111,7 @@ class EDD_Batch_Mailchimp_Ecommerce extends EDD_Batch_Export {
 	/**
 	 * Set the properties specific to the payments export
 	 *
-	 * @since 2.4.2
+	 * @since 2.5.3.2
 	 * @param array $request The Form Data passed into the batch processing
 	 */
 	public function set_properties( $request ) {
@@ -125,7 +122,7 @@ class EDD_Batch_Mailchimp_Ecommerce extends EDD_Batch_Export {
 	/**
 	 * Process a step
 	 *
-	 * @since 2.4
+	 * @since 2.5.3
 	 * @return bool
 	 */
 	public function process_step() {
@@ -157,7 +154,7 @@ class EDD_Batch_Mailchimp_Ecommerce extends EDD_Batch_Export {
 	 * Perform the export
 	 *
 	 * @access public
-	 * @since 2.4
+	 * @since 2.5.3
 	 * @return void
 	 */
 	public function export() {

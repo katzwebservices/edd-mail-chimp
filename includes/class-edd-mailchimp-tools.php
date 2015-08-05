@@ -9,22 +9,32 @@
 */
 class EDD_MC_Tools {
 
+	/**
+	 * Construct for EDD MC Tools class
+	 *
+	 * @since  2.5.3
+	 */
 	public function __construct() {
-
 		$this->hooks();
-		$this->filters();
-
 	}
 
+	/**
+	 * Register hooks for the EDD Mail Chimp extension with the EDD Tools page
+	 *
+	 * @since  2.5.3
+	 * @return [type] [description]
+	 */
 	private function hooks() {
 		add_action( 'edd_tools_tab_general', array( $this, 'display_tools' ) );
 		add_action( 'edd_register_batch_exporter', array( $this, 'register_batch_processor' ) );
 	}
 
-	private function filters() {
-
-	}
-
+	/**
+	 * Render the Mail Chimp Tools
+	 *
+	 * @since  2.5.3
+	 * @return void
+	 */
 	public function display_tools() {
 		?>
 		<div class="postbox">
@@ -47,6 +57,7 @@ class EDD_MC_Tools {
 
 	/**
 	 * Register the batch processor
+	 *
 	 * @since  2.5.3
 	 */
 	function register_batch_processor() {

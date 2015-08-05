@@ -69,7 +69,7 @@ class EDD_MC_Ecommerce_360 {
       EDD()->session->set( $mc_eid_key, NULL );
 
     }
-    
+
   }
 
   /**
@@ -159,6 +159,7 @@ class EDD_MC_Ecommerce_360 {
         'store_id'   => self::_edd_ec360_get_store_id(),   // string, 32 char limit
         'store_name' => home_url(),          // string
         'items'      => $items,
+        'order_date' => get_the_date( 'Y-n-j', $payment_id ),
       );
 
       // Set Ecommerce360 variables if they exist

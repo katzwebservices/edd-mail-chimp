@@ -23,20 +23,25 @@ if ( class_exists( 'EDD_License' ) && is_admin() ) {
 }
 
 if( ! class_exists( 'EDD_MailChimp_API' ) ) {
-	include( dirname( __FILE__ ) . '/includes/class-edd-mailchimp-api.php' );
+	include( EDD_MAILCHIMP_PATH . '/includes/class-edd-mailchimp-api.php' );
 }
 
 if( ! class_exists( 'EDD_Newsletter' ) ) {
-	include( dirname( __FILE__ ) . '/includes/class-edd-newsletter.php' );
+	include( EDD_MAILCHIMP_PATH . '/includes/class-edd-newsletter.php' );
 }
 
 if( ! class_exists( 'EDD_MailChimp' ) ) {
-	include( dirname( __FILE__ ) . '/includes/class-edd-mailchimp.php' );
+	include( EDD_MAILCHIMP_PATH . '/includes/class-edd-mailchimp.php' );
 }
 
 if( ! class_exists( 'EDD_MC_Ecommerce_360' ) ) {
-	include( dirname( __FILE__ ) . '/includes/class-edd-ecommerce360.php' );
+	include( EDD_MAILCHIMP_PATH . '/includes/class-edd-ecommerce360.php' );
 }
 
-$edd_mc    = new EDD_MailChimp( 'mailchimp', 'Mail Chimp' );
-$edd_mc360 = new EDD_MC_Ecommerce_360;
+if ( ! class_exists( 'EDD_MC_Tools' ) ) {
+	include( EDD_MAILCHIMP_PATH . '/includes/class-edd-mailchimp-tools.php' );
+}
+
+$edd_mc       = new EDD_MailChimp( 'mailchimp', 'Mail Chimp' );
+$edd_mc360    = new EDD_MC_Ecommerce_360;
+$edd_mc_tools = new EDD_MC_Tools();

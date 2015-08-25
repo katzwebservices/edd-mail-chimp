@@ -9,7 +9,7 @@ Author URI: http://pippinsplugins.com
 Contributors: Pippin Williamson, Dave Kiss
 */
 
-define( 'EDD_MAILCHIMP_PRODUCT_NAME', 'MailChimp' );
+define( 'EDD_MAILCHIMP_PRODUCT_NAME', 'Mail Chimp' );
 define( 'EDD_MAILCHIMP_PATH', dirname( __FILE__ ) );
 
 /*

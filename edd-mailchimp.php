@@ -1,15 +1,15 @@
 <?php
 /*
-Plugin Name: Easy Digital Downloads - Mail Chimp
+Plugin Name: Easy Digital Downloads - MailChimp
 Plugin URL: http://easydigitaldownloads.com/extension/mail-chimp
-Description: Include a Mail Chimp signup option with your Easy Digital Downloads checkout
+Description: Include a MailChimp signup option with your Easy Digital Downloads checkout
 Version: 2.5.3
 Author: Pippin Williamson
 Author URI: http://pippinsplugins.com
 Contributors: Pippin Williamson, Dave Kiss
 */
 
-define( 'EDD_MAILCHIMP_PRODUCT_NAME', 'Mail Chimp' );
+define( 'EDD_MAILCHIMP_PRODUCT_NAME', 'MailChimp' );
 define( 'EDD_MAILCHIMP_PATH', dirname( __FILE__ ) );
 
 /*
@@ -44,7 +44,7 @@ if ( ! class_exists( 'EDD_MC_Tools' ) && class_exists( 'Easy_Digital_Downloads' 
 	}
 }
 
-$edd_mc       = new EDD_MailChimp( 'mailchimp', 'Mail Chimp' );
+$edd_mc       = new EDD_MailChimp( 'mailchimp', 'MailChimp' );
 $edd_mc360    = new EDD_MC_Ecommerce_360;
 
 if ( class_exists( 'EDD_MC_Tools' ) ) {

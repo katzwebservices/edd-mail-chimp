@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: EDD Mail Chimp\n"
+"Project-Id-Version: EDD MailChimp\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-17 16:04-0600\n"
 "PO-Revision-Date: 2015-02-17 16:04-0600\n"
@@ -33,19 +33,19 @@ msgid "Signup for the newsletter"
 msgstr ""
 
 #: ../includes/class-edd-mailchimp.php:65
-msgid "Mail Chimp Settings"
+msgid "MailChimp Settings"
 msgstr ""
 
 #: ../includes/class-edd-mailchimp.php:66
-msgid "Configure Mail Chimp Integration Settings"
+msgid "Configure MailChimp Integration Settings"
 msgstr ""
 
 #: ../includes/class-edd-mailchimp.php:71
-msgid "Mail Chimp API Key"
+msgid "MailChimp API Key"
 msgstr ""
 
 #: ../includes/class-edd-mailchimp.php:72
-msgid "Enter your Mail Chimp API key"
+msgid "Enter your MailChimp API key"
 msgstr ""
 
 #: ../includes/class-edd-mailchimp.php:78

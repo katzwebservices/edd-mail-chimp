@@ -19,7 +19,7 @@ class EDD_MC_Tools {
 	}
 
 	/**
-	 * Register hooks for the EDD Mail Chimp extension with the EDD Tools page
+	 * Register hooks for the EDD MailChimp extension with the EDD Tools page
 	 *
 	 * @since  2.5.3
 	 * @return [type] [description]
@@ -30,7 +30,7 @@ class EDD_MC_Tools {
 	}
 
 	/**
-	 * Render the Mail Chimp Tools
+	 * Render the MailChimp Tools
 	 *
 	 * @since  2.5.3
 	 * @return void
